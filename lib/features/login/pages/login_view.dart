@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
@@ -43,24 +44,25 @@ class LoginView extends StatelessWidget {
                     physics: const ClampingScrollPhysics(),
                     children: [
                       SizedBox(height: mediaQuery.height * 0.1),
-                      Text(
-                        "Login",
-                        textAlign: TextAlign.center,
-                        style: theme.textTheme.titleLarge,
-                      ),
+                      Text(vm.currentLanguage == "en" ? "Login" : "خش هتجيبك",
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.titleLarge),
                       SizedBox(height: mediaQuery.height * 0.2),
                       Text(
-                        "Welcome Back",
+                        vm.currentLanguage == "en"
+                            ? "Welcome Back"
+                            : "خش برجلك اليمين",
                         textAlign: TextAlign.start,
                         style: theme.textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24,
-                        ),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24,
+                            color: vm.isDark() ? Colors.white : Colors.black),
                       ),
                       const SizedBox(height: 40),
                       Text(
-                        "Email",
-                        style: theme.textTheme.bodySmall,
+                        vm.currentLanguage == "en" ? "Email" : "الميل",
+                        style: theme.textTheme.bodySmall?.copyWith(
+                            color: vm.isDark() ? Colors.white : Colors.black),
                       ),
                       CustomTextField(
                         controller: emailController,
@@ -68,41 +70,55 @@ class LoginView extends StatelessWidget {
                           var regex = RegExp(
                               r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
                           if (value!.trim().isEmpty || value == null) {
-                            return "Enter an Email please";
+                            return vm.currentLanguage == "en"
+                                ? "Enter an Email please"
+                                : "شكلك نسيت الميل";
                           }
                           if (!regex.hasMatch(value)) {
-                            return "Invalid Email";
+                            return vm.currentLanguage == "en"
+                                ? "Invalid Email"
+                                : "غلط يا غالي";
                           }
                           return null;
                         },
-                        suffixWidget: const Icon(Icons.email_rounded),
-                        hint: "Enter your Email.",
+                        suffixWidget: Icon(
+                          Icons.email_rounded,
+                          color: theme.primaryColor,
+                        ),
+                        hint: vm.currentLanguage == "en"
+                            ? "Enter your Email."
+                            : "دخل الميل هنا",
                         keyboardType: TextInputType.emailAddress,
-                        hintColor: Colors.grey.shade700,
+                        hintColor: Colors.grey,
                       ),
                       SizedBox(height: mediaQuery.height * 0.03),
                       Text(
-                        "Password",
-                        style: theme.textTheme.bodySmall,
+                        vm.currentLanguage == "en" ? "Password" : "كلمة السر",
+                        style: theme.textTheme.bodySmall?.copyWith(
+                            color: vm.isDark() ? Colors.white : Colors.black),
                       ),
                       CustomTextField(
                         controller: passwordController,
                         onValidate: (value) {
                           if (value!.trim().isEmpty || value == null) {
-                            return "Enter your Password please";
+                            return vm.currentLanguage == "en"
+                                ? "Enter your Password please"
+                                : "دخل كلمة السر يا عم";
                           }
                           return null;
                         },
                         keyboardType: TextInputType.visiblePassword,
                         isPassword: true,
                         maxLines: 1,
-                        hint: "Enter your Password.",
+                        hint: vm.currentLanguage == "en"
+                            ? "Enter your Password."
+                            : "دخل كلمة السر",
                       ),
                       SizedBox(height: mediaQuery.height * 0.05),
                       ElevatedButton(
                         style: ButtonStyle(
                             backgroundColor:
-                            MaterialStatePropertyAll(theme.primaryColor)),
+                                MaterialStatePropertyAll(theme.primaryColor)),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             FirebaseUtils()
@@ -122,22 +138,32 @@ class LoginView extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("Login", style: theme.textTheme.bodyMedium),
-                            const Icon(Icons.chevron_right)
+                            Text(vm.currentLanguage == "en" ? "Login" : "خش",
+                                style: theme.textTheme.bodyMedium),
+                            const Icon(
+                              Icons.chevron_right,
+                              color: Colors.white,
+                            )
                           ],
                         ),
                       ),
                       Text(
-                        "OR",
-                        style: theme.textTheme.bodySmall,
+                        vm.currentLanguage == "en" ? "OR" : "أو",
+                        style: theme.textTheme.bodySmall?.copyWith(
+                            color: vm.isDark() ? Colors.white : Colors.black),
                         textAlign: TextAlign.center,
                       ),
                       TextButton(
                         onPressed: () {
                           Navigator.pushNamed(context, RegisterView.routeName);
                         },
-                        child: Text("Create New Account !",
-                            style: theme.textTheme.bodyMedium),
+                        child: Text(
+                            vm.currentLanguage == "en"
+                                ? "Create New Account !"
+                                : "اعمل ميل جديد",
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                                color:
+                                    vm.isDark() ? Colors.white : Colors.black)),
                       ),
                     ],
                   ),

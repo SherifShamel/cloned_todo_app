@@ -12,6 +12,8 @@ class SettingsProvider extends ChangeNotifier {
 
   int currentIndex = 0;
 
+  DateTime selectedDate = DateTime.now();
+
   changeIndex(int index) {
     currentIndex = index;
     notifyListeners();
@@ -50,9 +52,22 @@ class SettingsProvider extends ChangeNotifier {
     mode ??= "light";
     currentTheme = (mode == "dark" ? ThemeMode.dark : ThemeMode.light);
 
-
     language ??= "en";
     currentLanguage = language;
+  }
 
+  selectTaskDate(BuildContext context) async{
+    var currentSelectedDate = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      currentDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(
+        const Duration(days: 365),
+      ),
+    );
+    if(currentSelectedDate == null) return;
+    selectedDate=currentSelectedDate;
+    notifyListeners();
   }
 }

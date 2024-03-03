@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_app/settings_provider.dart';
 
 class CustomTextField extends StatefulWidget {
   final TextEditingController? controller;
@@ -56,6 +58,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
+    var vm = Provider.of<SettingsProvider>(context);
     return TextFormField(
       controller: widget.controller,
       initialValue: widget.value,
@@ -73,24 +76,26 @@ class _CustomTextFieldState extends State<CustomTextField> {
       keyboardType: widget.keyboardType,
       inputFormatters: widget.inputFormatters,
       enabled: widget.enabled,
-      style: theme.textTheme.bodyLarge?.copyWith(color: Colors.black, fontSize: 18),
+      style: theme.textTheme.bodyLarge
+          ?.copyWith(color: Colors.black, fontSize: 18),
       autovalidateMode: AutovalidateMode.onUserInteraction,
       textInputAction: widget.action ?? TextInputAction.done,
       focusNode: widget.focusNode,
       decoration: InputDecoration(
         suffixIcon: widget.isPassword ?? false
             ? InkWell(
-          onTap: () {
-            setState(() {
-              // true = false
-              obscureText = !obscureText;
-            });
-          },
-          child: Icon(
-            obscureText ? Icons.visibility : Icons.visibility_off,
-            // color: Colors.grey,
-          ),
-        )
+                onTap: () {
+                  setState(() {
+                    // true = false
+                    obscureText = !obscureText;
+                  });
+                },
+                child: Icon(
+                  obscureText ? Icons.visibility : Icons.visibility_off,
+                  color: theme.primaryColor,
+                  // color: Colors.grey,
+                ),
+              )
             : widget.suffixWidget,
         prefixIcon: widget.prefixIcon,
         hintText: widget.hint,
@@ -118,7 +123,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
             width: 1,
           ),
         ),
-        errorStyle: const TextStyle(color: Colors.deepOrangeAccent, fontWeight: FontWeight.w400,),
+        errorStyle: const TextStyle(
+          color: Colors.deepOrangeAccent,
+          fontWeight: FontWeight.w400,
+        ),
         errorMaxLines: 6,
         errorBorder: UnderlineInputBorder(
           borderRadius: BorderRadius.circular(10),

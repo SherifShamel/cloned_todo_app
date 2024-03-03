@@ -6,7 +6,6 @@ import 'package:todo_app/firebase_utils.dart';
 import 'package:todo_app/generated/assets.dart';
 import 'package:todo_app/settings_provider.dart';
 
-
 import '../../../core/widgets/custom_text_field.dart';
 
 class RegisterView extends StatelessWidget {
@@ -28,9 +27,7 @@ class RegisterView extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: vm.currentTheme == ThemeMode.dark
-            ? const Color(0xff060E1E)
-            : const Color(0xffDFECDB),
+        color: vm.isDark() ? const Color(0xff060E1E) : const Color(0xffDFECDB),
         image: const DecorationImage(
             image: AssetImage(Assets.imgPattern), fit: BoxFit.cover),
       ),
@@ -41,8 +38,8 @@ class RegisterView extends StatelessWidget {
           backgroundColor: Colors.transparent,
           elevation: 0,
           title: Text(
-            "Register",
-            style: theme.textTheme.titleLarge,
+            vm.currentLanguage == "en" ? "Register" : "تسجيل ميل",
+            style: theme.textTheme.titleLarge?.copyWith(color: Colors.black),
           ),
         ),
         backgroundColor: Colors.transparent,
@@ -61,25 +58,34 @@ class RegisterView extends StatelessWidget {
                         height: mediaQuery.height * 0.13,
                       ),
                       Text(
-                        "Full Name",
-                        style: theme.textTheme.bodySmall,
+                        vm.currentLanguage == "en" ? "Full Name" : "الإسم كامل",
+                        style: theme.textTheme.bodySmall?.copyWith(
+                            color: vm.isDark() ? Colors.white : Colors.black),
                       ),
                       CustomTextField(
                         controller: fullNameController,
                         onValidate: (value) {
                           if (value!.trim().isEmpty || value == null) {
-                            return "Enter your name please";
+                            return vm.currentLanguage == "en"
+                                ? "Enter your name please"
+                                : "اكتب اسمك هنا يا نجم";
                           }
                         },
-                        suffixWidget: const Icon(Icons.person),
-                        hint: "Enter your Full Name.",
+                        suffixWidget: Icon(
+                          Icons.person,
+                          color: theme.primaryColor,
+                        ),
+                        hint: vm.currentLanguage == "en"
+                            ? "Enter your Full Name."
+                            : "اكتب الاسم كامل",
                         keyboardType: TextInputType.text,
-                        hintColor: Colors.grey.shade700,
+                        hintColor: Colors.grey,
                       ),
                       SizedBox(height: mediaQuery.height * 0.03),
                       Text(
-                        "Email",
-                        style: theme.textTheme.bodySmall,
+                        vm.currentLanguage == "en" ? "Email" : "الميل",
+                        style: theme.textTheme.bodySmall?.copyWith(
+                            color: vm.isDark() ? Colors.white : Colors.black),
                       ),
                       CustomTextField(
                         controller: emailController,
@@ -87,22 +93,32 @@ class RegisterView extends StatelessWidget {
                           var regex = RegExp(
                               r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
                           if (value!.trim().isEmpty || value == null) {
-                            return "Enter an Email please";
+                            return vm.currentLanguage == "en"
+                                ? "Enter an Email please"
+                                : "ياعم اكتب الميل هنا";
                           }
                           if (!regex.hasMatch(value)) {
-                            return "Invalid Email";
+                            return vm.currentLanguage == "en"
+                                ? "Invalid Email"
+                                : "الميل غلط";
                           }
                           return null;
                         },
-                        suffixWidget: const Icon(Icons.email_rounded),
-                        hint: "Enter your Email.",
+                        suffixWidget: Icon(
+                          Icons.email_rounded,
+                          color: theme.primaryColor,
+                        ),
+                        hint: vm.currentLanguage == "en"
+                            ? "Enter your Email."
+                            : "اكتب الميل",
                         keyboardType: TextInputType.emailAddress,
-                        hintColor: Colors.grey.shade700,
+                        hintColor: Colors.grey,
                       ),
                       SizedBox(height: mediaQuery.height * 0.03),
                       Text(
-                        "Password",
-                        style: theme.textTheme.bodySmall,
+                        vm.currentLanguage == "en" ? "Password" : "كلمة السر",
+                        style: theme.textTheme.bodySmall?.copyWith(
+                            color: vm.isDark() ? Colors.white : Colors.black),
                       ),
                       CustomTextField(
                         controller: passwordController,
@@ -110,49 +126,65 @@ class RegisterView extends StatelessWidget {
                           var regex = RegExp(
                               r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
                           if (value!.trim().isEmpty || value == null) {
-                            return "Enter a password please";
+                            return vm.currentLanguage == "en"
+                                ? "Enter a password please"
+                                : "اكتب كلمة السر هنا";
                           }
                           if (!regex.hasMatch(value)) {
-                            return "password should contain at least one upper case \n at least one lower case \n at least one digit \n at least one Special character \n Must be at least 8 characters in length";
+                            return vm.currentLanguage == "en"
+                                ? "password should contain at least one upper case \n at least one lower case \n at least one digit \n at least one Special character \n Must be at least 8 characters in length"
+                                : "كلمة السر لازم تكون انجليزي وفيها حرف كبير عالاقل\n وحرف صغير عالاقل\n ورقم ورمز\n و 8 حروف";
                           }
                         },
                         keyboardType: TextInputType.visiblePassword,
                         isPassword: true,
                         maxLines: 1,
-                        hint: "Enter your Password.",
+                        hint: vm.currentLanguage == "en"
+                            ? "Enter your Password."
+                            : "اكتب كلمة السر هنا",
                       ),
                       SizedBox(height: mediaQuery.height * 0.05),
                       Text(
-                        "Confirm Password",
-                        style: theme.textTheme.bodySmall,
+                        vm.currentLanguage == "en"
+                            ? "Confirm Password"
+                            : "نفس كلمة السر",
+                        style: theme.textTheme.bodySmall?.copyWith(
+                            color: vm.isDark() ? Colors.white : Colors.black),
                       ),
                       CustomTextField(
                         controller: confirmPasswordController,
                         onValidate: (value) {
                           if (value!.trim().isEmpty || value == null) {
-                            return "Enter a password please";
+                            return vm.currentLanguage == "en"
+                                ? "Enter a password please"
+                                : "كلمة السير التانية هنا";
                           }
 
                           if (value != passwordController.text) {
-                            return "Password doesn't match";
+                            return vm.currentLanguage == "en"
+                                ? "Password doesn't match"
+                                : "لا مش هي هي";
                           }
                         },
                         keyboardType: TextInputType.visiblePassword,
                         isPassword: true,
                         maxLines: 1,
-                        hint: "Confirm your Password.",
+                        hint: vm.currentLanguage == "en"
+                            ? "Confirm your Password."
+                            : "أكد كلمة السر",
                       ),
                       SizedBox(height: mediaQuery.height * 0.05),
                       ElevatedButton(
                         style: ButtonStyle(
                             backgroundColor:
-                            MaterialStatePropertyAll(theme.primaryColor)),
+                                MaterialStatePropertyAll(theme.primaryColor)),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             FirebaseUtils()
                                 .createUserWithEmailAndPassword(
-                                emailController.text,
-                                passwordController.text)
+                              emailController.text,
+                              passwordController.text,
+                            )
                                 .then((value) {
                               if (value == true) {
                                 EasyLoading.dismiss();
@@ -168,7 +200,10 @@ class RegisterView extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text("Register", style: theme.textTheme.bodyMedium),
-                            const Icon(Icons.chevron_right)
+                            Icon(
+                              Icons.chevron_right,
+                              color: theme.primaryColor,
+                            )
                           ],
                         ),
                       ),

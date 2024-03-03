@@ -2,7 +2,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 
 class SnackBarService {
-  showSuccessMsg(String msg) {
+  static showSuccessMsg(String msg) {
     BotToast.showCustomNotification(
       toastBuilder: (cancelFunc) {
         return Material(

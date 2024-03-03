@@ -1,6 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_app/core/utils/extract_date_time.dart';
+import 'package:todo_app/firebase_utils.dart';
+import 'package:todo_app/models/task_model.dart';
 import 'package:todo_app/settings_provider.dart';
 
 import '../widgets/task_item_widget.dart';
@@ -35,7 +39,7 @@ class _TasksViewState extends State<TasksView> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 70),
                 child: Text(
-                  "To Do List",
+                  vm.currentLanguage == "en" ? "To Do List" : "المهمات",
                   style: theme.textTheme.titleLarge,
                 ),
               ),
@@ -46,6 +50,7 @@ class _TasksViewState extends State<TasksView> {
                 onDateChange: (selectedDate) {
                   setState(() {
                     _focusDate = selectedDate;
+                    vm.selectedDate = _focusDate;
                   });
                 },
                 timeLineProps: const EasyTimeLineProps(separatorPadding: 15.0),
@@ -85,19 +90,67 @@ class _TasksViewState extends State<TasksView> {
             ],
           ),
         ),
-        Expanded(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: const [
-              TaskItemWidget(),
-              TaskItemWidget(),
-              TaskItemWidget(),
-              TaskItemWidget(),
-              TaskItemWidget(),
-              TaskItemWidget(),
-            ],
+        StreamBuilder<QuerySnapshot<TaskModel>>(
+          stream: FirebaseUtils().getStreamDataFromFireStore(
+            vm.selectedDate,
           ),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Column(
+                children: [
+                  Text(snapshot.error.toString()),
+                  const Icon(Icons.refresh),
+                ],
+              );
+            }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            var tasksList = snapshot.data?.docs
+                    .map(
+                      (e) => e.data(),
+                    )
+                    .toList() ??
+                [];
+
+            return Expanded(
+              child: ListView.builder(
+                itemBuilder: (context, index) =>
+                    TaskItemWidget(taskModel: tasksList[index]),
+                itemCount: tasksList.length,
+              ),
+            );
+          },
         ),
+        /*FutureBuilder<List<TaskModel>>(
+          future: FirebaseUtils().getDataFromFireStore(
+            vm.selectedDate,
+          ),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Column(
+                children: [
+                  Text(snapshot.error.toString()),
+                  const Icon(Icons.refresh),
+                ],
+              );
+            }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            var tasksList = snapshot.data ?? [];
+
+            return Expanded(
+              child: ListView.builder(
+                itemBuilder: (context, index) =>
+                    TaskItemWidget(taskModel: tasksList[index]),
+                itemCount: tasksList.length,
+              ),
+            );
+          },
+        ),*/
       ],
     );
   }
